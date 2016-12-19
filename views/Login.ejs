@@ -1,0 +1,57 @@
+<div class="modal fade" id="login-modal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true" style="display: none;">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <!-- Begin # DIV Form -->
+
+
+            <!-- Begin # Login Form -->
+            <form action='/authorize/register' method='post' encType="multipart/form-data">
+                <div class="modal-body">
+                    <input id="login_username" class="form-control" name="userName" type="text" placeholder="Username" required>
+                    <input id="login_password" class="form-control" name="password" type="password" placeholder="Password" required>
+                    <input class="form-control storeIdInput" name="storeId" type="text" placeholder="Store-Id" required>
+
+                </div>
+                <!--<div class="modal-footer">
+                            <div>
+
+                            </div>
+				    	    <div>
+                                <button id="login_register_btn" type="button" class="btn btn-link">Register</button>
+                            </div>
+				        </div>-->
+                <button type="submit" class="btn btn-primary loginbutton" style="width: 100%;background: #1D62F0;color: white;">Login/Register</button>
+            </form>
+            <!-- End # Login Form -->
+
+
+            <!--  Begin | Register Form
+                    <form id="register-form" style="display:none;" action="" method="post">
+            		    <div class="modal-body">
+		    				<div id="div-register-msg">
+                                <div id="icon-register-msg" class="glyphicon glyphicon-chevron-right"></div>
+                                <span id="text-register-msg">Register an account.</span>
+                            </div>
+		    				<input id="register_username" class="form-control" type="text" placeholder="Username (type ERROR for error effect)" required>
+                            <input id="register_email" class="form-control" type="text" placeholder="E-Mail" required>
+                            <input id="register_password" class="form-control" type="password" placeholder="Password" required>
+            			</div>
+		    		    <div class="modal-footer">
+                            <div>
+                                <button type="submit" class="btn btn-primary btn-lg btn-block">Register</button>
+                            </div>
+                            <div>
+                                <button id="register_login_btn" type="button" class="btn btn-link">Log In</button>
+                                <button id="register_lost_btn" type="button" class="btn btn-link">Lost Password?</button>
+                            </div>
+		    		    </div>
+                    </form>
+                     End | Register Form-->
+
+            <!-- </div>
+                <!-- End # DIV Form -->
+
+        </div>
+    </div>
+</div>
+<!-- END # MODAL LOGIN -->
