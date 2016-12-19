@@ -1,4 +1,4 @@
-#!/usr/bin/env node
+///usr/bin/env node
 
 /**
  * Module dependencies.
@@ -15,9 +15,10 @@ var cfenv = require('cfenv');
 
 
 // get the app environment from Cloud Foundry
-var appEnv = cfenv.getAppEnv();
+//var appEnv = cfenv.getAppEnv();
 
-var port = normalizePort(appEnv.port || '3000');
+//var port = normalizePort(appEnv.port || '3000');
+var port = normalizePort(process.env.PORT || '3000');
 app.set('port', port);
 
 /**
@@ -39,19 +40,19 @@ server.on('listening', onListening);
  */
 
 function normalizePort(val) {
-    var port = parseInt(val, 10);
+  var port = parseInt(val, 10);
 
-    if (isNaN(port)) {
-        // named pipe
-        return val;
-    }
+  if (isNaN(port)) {
+    // named pipe
+    return val;
+  }
 
-    if (port >= 0) {
-        // port number
-        return port;
-    }
+  if (port >= 0) {
+    // port number
+    return port;
+  }
 
-    return false;
+  return false;
 }
 
 /**
@@ -87,5 +88,5 @@ function normalizePort(val) {
  */
 
 function onListening() {
-    console.log("server listening on " + appEnv.url);
+  //console.log("server listening on " + process.env.url);
 }

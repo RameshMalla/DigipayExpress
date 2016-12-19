@@ -10,7 +10,6 @@
         "cfenv": "^1.0.3",
         "cookie-parser": "~1.4.3",
         "debug": "~2.2.0",
-        "excel": "^0.1.7",
         "ejs": "^2.5.2",
         "express": "~4.13.4",
         "express-fileupload": "0.0.5",

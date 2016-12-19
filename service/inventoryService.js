@@ -3,6 +3,21 @@ var OffersModel = require('./offerModel.js');
 
 function inventoryService(requestBody, responseBody) {
 
+
+
+  this.updaterating = function(storeId, itemId, rating) {
+    InventoryModel.findOneAndUpdate({
+      storeId: storeId,
+      itemId: itemId
+    }, {
+      itemRating: rating
+    }, function(err, inventory) {
+      if (err)
+        throw err;
+      console.log("Updated");
+    });
+  }
+
   /*Item List*/
   this.getItemList = function() {
 
@@ -15,6 +30,10 @@ function inventoryService(requestBody, responseBody) {
     InventoryModel.find({
       storeId: storeId
     }).exec(function(err, inventories) {
+      // for (var i = 0; i < inventories.length; i++) {
+      //   var rating = Math.floor(Math.random() * 5) + 1
+      //   new inventoryService(null, null).updaterating(inventories[i].storeId, inventories[i].itemId, rating);
+      // }
       responseBody.json(inventories);
     });
   }

@@ -12,6 +12,7 @@ var InventorySchema = new Schema({
   itemDescription: String,
   itemPrice: String,
   itemQuantity: Number,
-  itemImage: String
+  itemImage: String,
+  itemRating: String
 });
 module.exports = mongodb.model('inventorys', InventorySchema);

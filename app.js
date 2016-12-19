@@ -61,12 +61,19 @@ mongodb.connect(mongurl, function(error) {
 //   console.log('running a task every minute');
 // });
 
-// app.use(function(req, res, next) {
-//   res.header("Access-Control-Allow-Origin", "*");
-//   res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With,     Content-Type, Accept");
-//   next();
-// });
-app.use(session({resave: true, saveUninitialized: true, secret: 'digipaysession', cookie: { maxAge: 60000 }}));
+app.use(function(req, res, next) {
+  res.header("Access-Control-Allow-Origin", "*");
+  res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With,     Content-Type, Accept");
+  next();
+});
+app.use(session({
+  resave: true,
+  saveUninitialized: true,
+  secret: 'digipaysession',
+  cookie: {
+    maxAge: 60000
+  }
+}));
 
 app.use('/', routes);
 app.use('/users', users);
@@ -80,8 +87,8 @@ app.use('/analytics', analytics);
 app.use('/reviews', reviews);
 app.use('/stores', stores);
 app.use('/offersAndpromotions', discountUpdate);
-app.use('/recomendations',recomendations);
-app.use('/authorize',authorize);
+app.use('/recomendations', recomendations);
+app.use('/authorize', authorize);
 
 
 // catch 404 and forward to error handler
@@ -116,28 +123,28 @@ app.use(function(err, req, res, next) {
   });
 });
 
-//weekly
-cron.schedule('59 23 * * Sun', function(){
-  new schedulerService().updatedata(0);
-});
-
-//Monthly
-cron.schedule('0 0 1 Jan,Dec *', function(){
-   new schedulerService().updatedata(1);
-});
-
-//yearly
-cron.schedule('0 0 1 Jan *', function(){
-  new schedulerService().updatedata(2);
-});
-
-//update arrivals
-cron.schedule('59 23 * * 0,7', function(){
-  new schedulerService().updateNewArrivals();
-});
-
-cron.schedule('* 0,23 * * * *', function(){
-  new recommendationService().setRecommendations();
-});
+// //weekly
+// cron.schedule('59 23 * * Sun', function(){
+//   new schedulerService().updatedata(0);
+// });
+//
+// //Monthly
+// cron.schedule('0 0 1 Jan,Dec *', function(){
+//    new schedulerService().updatedata(1);
+// });
+//
+// //yearly
+// cron.schedule('0 0 1 Jan *', function(){
+//   new schedulerService().updatedata(2);
+// });
+//
+// //update arrivals
+// cron.schedule('59 23 * * 0,7', function(){
+//   new schedulerService().updateNewArrivals();
+// });
+//
+// cron.schedule('* 0,23 * * * *', function(){
+//   new recommendationService().setRecommendations();
+// });
 
 module.exports = app;
