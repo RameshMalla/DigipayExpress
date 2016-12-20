@@ -1,126 +1,131 @@
 var InventoryModel = require('./inventoryModel.js');
 var OffersModel = require('./offerModel.js');
+var inventorycache = require('../routes/NodeCache');
 
 function inventoryService(requestBody, responseBody) {
 
-
-
-  this.updaterating = function(storeId, itemId, rating) {
-    InventoryModel.findOneAndUpdate({
-      storeId: storeId,
-      itemId: itemId
-    }, {
-      itemRating: rating
-    }, function(err, inventory) {
-      if (err)
-        throw err;
-      console.log("Updated");
-    });
-  }
-
-  /*Item List*/
-  this.getItemList = function() {
-
-    InventoryModel.find({}).exec(function(err, inventories) {
-      responseBody.json(inventories);
-    });
-  }
-
-  this.getItemByStoreId = function(storeId) {
-    InventoryModel.find({
-      storeId: storeId
-    }).exec(function(err, inventories) {
-      // for (var i = 0; i < inventories.length; i++) {
-      //   var rating = Math.floor(Math.random() * 5) + 1
-      //   new inventoryService(null, null).updaterating(inventories[i].storeId, inventories[i].itemId, rating);
-      // }
-      responseBody.json(inventories);
-    });
-  }
-
-  /*Item BY ID and store id*/
-  this.getItemById = function(storeId, itemId) {
-    console.log(storeId + " " + itemId);
-    InventoryModel.findOne({
-      storeId: storeId,
-      itemId: itemId
-    }, function(err, inventory) {
-      if (err)
-        throw err;
-      // object of the user
-      if (inventory == null) {
-        responseBody.status(404).send("Item Not found");
-      } else {
-        inventory = inventory.toObject();
-        //console.log("ITEMS");
-        getOfferDetails(storeId, itemId, function(offerDetails) {
-          if (offerDetails != null && offerDetails.offerType == 'discount') {
-            var discountedPrice = inventory.itemPrice - ((Number(offerDetails.discountRate) / 100) * Number(inventory.itemPrice));
-            inventory.discountPrice = discountedPrice;
-            inventory.totalPrice = inventory.discountPrice;
-            inventory.discountAvailed = offerDetails.discountRate + "% off"
-            console.log(inventory.discountAvailed);
-          } else {
-            inventory.discountPrice = null;
-            inventory.totalPrice = inventory.itemPrice;
-          }
-
-          inventory.totalQuantity = 1;
-          responseBody.status(200);
-          responseBody.json(inventory);
+    this.updaterating = function(storeId, itemId, rating) {
+        InventoryModel.findOneAndUpdate({
+            storeId: storeId,
+            itemId: itemId
+        }, {
+            itemRating: rating
+        }, function(err, inventory) {
+            if (err)
+                throw err;
+            console.log("Updated");
         });
-      }
-    });
+    }
 
-  }
+    /*Item List*/
+    this.getItemList = function() {
+        InventoryModel.find({}).exec(function(err, inventories) {
+            responseBody.json(inventories);
+        });
+    }
 
-  this.updateInventoryQuantity = function(storeId, itemId, updateQuantity) {
-    InventoryModel.findOneAndUpdate({
-      storeId: storeId,
-      itemId: itemId
-    }, {
-      itemQuantity: updateQuantity
-    }, function(err, inventory) {
-      if (err)
-        throw err;
-      console.log("Updated");
-    });
-  }
+    this.getItemByStoreId = function(storeId) {
+        InventoryModel.find({
+            storeId: storeId
+        }).exec(function(err, inventories) {
+            // for (var i = 0; i < inventories.length; i++) {
+            //   var rating = Math.floor(Math.random() * 5) + 1
+            //   new inventoryService(null, null).updaterating(inventories[i].storeId, inventories[i].itemId, rating);
+            // }
+            //new inventoryService(null, null).insertAlldoc();
+            inventorycache.set("store"+storeId, inventories, function(err, success) {
+                if (!err && success) {
+                    console.log("Added to cache");
+                }
+            });
 
-  /*Item BY ID and store id*/
-  this.getNewItemById = function(storeId, itemIds) {
-    console.log(storeId + " " + itemIds);
-    InventoryModel.find({
-      storeId: storeId,
-      itemId: {
-        $in: itemIds
-      }
-    }, function(err, inventory) {
-      if (err)
-        throw err;
-      // object of the user
-      if (inventory == null) {
-        responseBody.status(404).send("Item Not found");
-      } else {
-        responseBody.status(200);
-        responseBody.json(inventory);
-      }
-    });
+            responseBody.json(inventories);
+        });
+    }
 
-  }
+    /*Item BY ID and store id*/
+    this.getItemById = function(storeId, itemId) {
+        console.log(storeId + " " + itemId);
+        InventoryModel.findOne({
+            storeId: storeId,
+            itemId: itemId
+        }, function(err, inventory) {
+            if (err)
+                throw err;
+            // object of the user
+            if (inventory == null) {
+                responseBody.status(404).send("Item Not found");
+            } else {
+                inventory = inventory.toObject();
+                //console.log("ITEMS");
+                getOfferDetails(storeId, itemId, function(offerDetails) {
+                    if (offerDetails != null && offerDetails.offerType == 'discount') {
+                        var discountedPrice = inventory.itemPrice - ((Number(offerDetails.discountRate) / 100) * Number(inventory.itemPrice));
+                        inventory.discountPrice = discountedPrice;
+                        inventory.totalPrice = inventory.discountPrice;
+                        inventory.discountAvailed = offerDetails.discountRate + "% off"
+                        console.log(inventory.discountAvailed);
+                    } else {
+                        inventory.discountPrice = null;
+                        inventory.totalPrice = inventory.itemPrice;
+                    }
+
+                    inventory.totalQuantity = 1;
+                    responseBody.status(200);
+                    responseBody.json(inventory);
+                });
+            }
+        });
+
+    }
+
+    this.updateInventoryQuantity = function(storeId, itemId, updateQuantity) {
+        InventoryModel.findOneAndUpdate({
+            storeId: storeId,
+            itemId: itemId
+        }, {
+            itemQuantity: updateQuantity
+        }, function(err, inventory) {
+            if (err)
+                throw err;
+            console.log("Updated");
+        });
+    }
+
+    /*Item BY ID and store id*/
+    this.getNewItemById = function(storeId, itemIds) {
+        console.log(storeId + " " + itemIds);
+        InventoryModel.find({
+            storeId: storeId,
+            itemId: {
+                $in: itemIds
+            }
+        }, function(err, inventory) {
+            if (err)
+                throw err;
+            // object of the user
+            if (inventory == null) {
+                responseBody.status(404).send("Item Not found");
+            } else {
+                responseBody.status(200);
+                responseBody.json(inventory);
+            }
+        });
+
+    }
 
 
 
-  var getOfferDetails = function(storeId, itemId, callback) {
-    OffersModel.findOne({
-      storeId: storeId,
-      itemId: itemId
-    }, function(err, offerDetails) {
-      if (err)
-        throw err;
-      callback(offerDetails);
-    });
-  }
+    var getOfferDetails = function(storeId, itemId, callback) {
+        OffersModel.findOne({
+            storeId: storeId,
+            itemId: itemId
+        }, function(err, offerDetails) {
+            if (err)
+                throw err;
+            callback(offerDetails);
+        });
+    }
 }
 
 module.exports = inventoryService;

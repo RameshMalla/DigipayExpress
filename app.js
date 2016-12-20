@@ -45,8 +45,8 @@ app.use(bodyParser.urlencoded({
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
-var mongurl = "mongodb://ramesh:ramesh12692@ds153667.mlab.com:53667/paydata";
-//var mongurl = "mongodb://localhost:27017/paydata";
+//var mongurl = "mongodb://ramesh:ramesh12692@ds153667.mlab.com:53667/paydata";
+var mongurl = "mongodb://localhost:27017/paydata";
 
 //Mongo
 mongodb.connect(mongurl, function(error) {
