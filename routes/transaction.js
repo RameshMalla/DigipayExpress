@@ -16,4 +16,11 @@ router.get('/getTransactiondetailwithitemid/:phoneNumber/:itemId', function(req,
   new transactionService(req.body, res).getTransactionDetailsWithItemId(req.params.phoneNumber, req.params.itemId);
 });
 
+
+
+router.post('/addDigiMoney', function(req, res, next) {
+  console.log("Adding Transaction");
+  new transactionService(req.body, res).addDigiMoney();
+});
+
 module.exports = router;

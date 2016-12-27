@@ -4,6 +4,7 @@ var inventoryService = require('../service/inventoryService.js');
 var analyticsModel = require('./analyticsModel.js');
 
 var TransactionModel =require('./transactionModel.js');
+var userWallet = require("./userWallet.js");
 /*var Schema = mongodb.Schema;
 // Define defect schema
 var TransactionSchema = new Schema({
@@ -23,6 +24,15 @@ function transactionService(requestBody, responseBody) {
   //var TransactionModel = mongodb.model('transactions', TransactionSchema);
   var UserModel = models.User;
   this.enterTransactionDetails = function(phoneNumber) {
+    if(requestBody.modeOfPayment == 'DigiMioney'){
+    userWallet.findOne({phoneNumber:phoneNumber},function(err, data) {
+        if(err) throw err;
+        data.totalAmount = data.totalAmount - requestBody.amountPayed
+        data.transactions.push(setTransaction(requestBody,'debit',requestBody.amountPayed));
+        data.markModified('transactions');
+        data.save();
+    })
+  }
     var newTransaction = new TransactionModel(requestBody);
     newTransaction.save(function(err, newTransaction) {
       if (err) return console.error(err);
@@ -31,7 +41,7 @@ function transactionService(requestBody, responseBody) {
         new inventoryService(null, null).updateInventoryQuantity(newTransaction.itemsPurchased[i].storeId, newTransaction.itemsPurchased[i].itemId, newItemQuantity);
       }
       UserModel.findOneAndUpdate({
-        phoneNumber: "9940366400"
+        phoneNumber: phoneNumber
       }, {
         $push: {
           "transactionsMade": newTransaction._id
@@ -148,6 +158,48 @@ function transactionService(requestBody, responseBody) {
       }
     })
   }
+  
+  this.addDigiMoney = function(request,response){
+    userWallet.findOne({phoneNumber:requestBody.phoneNumber},function(err,data){
+      if(err) throw err;
+      if(data == null){
+        var userWallet=new userWallet();
+        userWallet.phoneNumber=requestBody.phoneNumber,
+        userWallet.emailId=requestBody.emailId,
+        userWallet.totalAmount=requestBody.amountAdded,
+        userWallet.lastTransactionAmount=requestBody.amountAdded,
+        userWallet.lastTransactionDate=new Date().getDate(),
+        userWallet.transactions=[{
+          transactionId:'1234567',
+          transactionAmount:requestBody.amountAdded,
+          transactionDate:new Date().getDate(),
+          transactionType:"credit"
+        }]
+        userWallet.markModified("transactions");
+        userWallet.save();
+      }
+      else if(data!=null){
+        data.totalAmount = requestBody.amountAdded+data.totalAmount,
+        data.lastTransactionAmount-requestBody.amountAdded,
+        data.lastTransactionDate=new Date().getDate(),
+        data.transactions.push(setTransaction(requestBody,'credit',requestBody.amountAdded))
+        data.markModified("transactions");
+        data.save();
+      }
+    })
+  }
+  
 }
+
+function setTransaction(requestBody,type,amount){
+  var transaction={
+          transactionId:'1234567',
+          transactionAmount:amount,
+          transactionDate:new Date().getDate(),
+          transactionType:type
+        }
+        return transaction;
+}
+
 
 module.exports = transactionService;

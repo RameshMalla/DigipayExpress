@@ -1,7 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var inventoryService = require('../service/inventoryService.js');
-var inventorycache = require('../routes/NodeCache');
+var inventorycache = require('../routes/nodecache');
 var io = require('../routes/streamer');
 
 /* GET inventory listing. */

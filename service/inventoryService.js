@@ -1,6 +1,6 @@
 var InventoryModel = require('./inventoryModel.js');
 var OffersModel = require('./offerModel.js');
-var inventorycache = require('../routes/NodeCache');
+var inventorycache = require('../routes/nodecache');
 
 function inventoryService(requestBody, responseBody) {
 
