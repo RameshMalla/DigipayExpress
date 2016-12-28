@@ -158,7 +158,7 @@ function transactionService(requestBody, responseBody) {
       }
     })
   }
-  
+
   this.addDigiMoney = function(request,response){
     userWallet.findOne({phoneNumber:requestBody.phoneNumber},function(err,data){
       if(err) throw err;
@@ -195,7 +195,7 @@ function transactionService(requestBody, responseBody) {
         responseBody.json(data);
     })
   }
-  
+
 }
 
 function setTransaction(requestBody,type,amount){
