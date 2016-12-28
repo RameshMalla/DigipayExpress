@@ -23,4 +23,10 @@ router.post('/addDigiMoney', function(req, res, next) {
   new transactionService(req.body, res).addDigiMoney();
 });
 
+
+router.get('/getDigiMoney', function(req, res, next) {
+  console.log("Adding Transaction");
+  new transactionService(req.body, res).getDigiMoney(req.params.phoneNumber);
+});
+
 module.exports = router;

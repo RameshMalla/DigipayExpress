@@ -188,6 +188,13 @@ function transactionService(requestBody, responseBody) {
       }
     })
   }
+  this.getDigiMoney =function(phoneNumber){
+    userWallet.findOne({phoneNumber:phoneNumber},function(err, data) {
+        if(err) throw err;
+        responseBody.status(200);
+        responseBody.json(data);
+    })
+  }
   
 }
 
